@@ -1,0 +1,12 @@
+#!/bin/bash
+# Request a CSR Template
+
+# Requires:
+#   ../client/deviceID		// ./gen-clientkey
+#   ../client/token.json	// ./get-token
+
+
+TOKEN=`jq -r '.registration.token' ../client/token.json`
+SUBSCRIBER=1		# Can be 1,2, or 3. See ../../routes/internal.js. 1 == Grandma
+
+curl -sS "http://localhost:3010/ca/csrt/$TOKEN/$SUBSCRIBER" | tee ../client/csrt.json

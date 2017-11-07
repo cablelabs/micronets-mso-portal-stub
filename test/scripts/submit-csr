@@ -1,0 +1,28 @@
+#!/bin/bash
+# Submit a CSR. Returns wifi cert, ca cert, and subscriber metadata.
+
+
+# Requires:	(each script below may also have dependencies)
+#   ../client/clientkey		// ./gen-clientkey
+#   ../client/csrt.json		// ./get-csrt
+#   ../ca/*					// installed files from repo (ca.key, ca.pem, client.cnf)
+
+# Extract token from json
+TOKEN=`jq -r '.registration.token' ../client/token.json`
+
+# Read in CSR. We need to use base64 to preserve line endings.
+CSR=`cat ../client/client.csr | base64`
+
+# Create JSON wrapper
+echo "{" > ../tmp/csr.json
+echo "  \"token\": \"$TOKEN\"," >> ../tmp/csr.json
+echo "  \"csr\": \"$CSR\"" >> ../tmp/csr.json
+echo "}" >> ../tmp/csr.json
+
+# Submit the CSR
+curl -d @../tmp/csr.json http://localhost:3010/ca/cert -v -H "Content-Type: application/json" > ../tmp/certs.json
+
+# Parse Reply
+jq -r '.subscriber' ../tmp/certs.json > ../client/subscriber.json
+jq -r '.caCert' ../tmp/certs.json | base64 -D > ../client/caCert.pem
+jq -r '.wifiCert' ../tmp/certs.json | base64 -D > ../client/wifiCert.crt

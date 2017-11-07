@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# This script will reuse the client device key pair (and deviceID). 
+# If you want to use a new device, run ../client/clean first
+
+# key pair/deviceID
+if [ ! -f ../client/clientkey ]; then
+    ./gen-clientkey
+fi
+
+# get a registration token.
+./get-token
+
+# get a csr template (mainly to specify encryption type).
+./get-csrt
+
+# generate a csr
+./gen-csr
+
+# submit csr (returns a certificate)
+./submit-csr

@@ -1,0 +1,4 @@
+#!/bin/bash
+# Remove generated client files.
+
+rm ../client/*

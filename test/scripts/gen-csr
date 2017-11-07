@@ -1,0 +1,22 @@
+#!/bin/bash
+# Generate a CSR
+
+# Requires:	(each script below may also have dependencies)
+#   ../client/clientkey		// ./gen-clientkey
+#   ../client/csrt.json		// ./get-csrt
+#   ../ca/*					// installed files from repo
+
+pushd ../ca > /dev/null
+
+# Get deviceID
+deviceID=$(<../client/deviceID)
+
+# Extract encryption type (typically rsa:2048)
+type=`jq -r '.csr_template.key_type' ../client/csrt.json`
+
+# Generate CSR
+openssl req -newkey "$type" -key ../client/clientkey -out ../client/client.csr -config request_csr.cnf
+
+cat ../client/client.csr
+
+popd > /dev/null

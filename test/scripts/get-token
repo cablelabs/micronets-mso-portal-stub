@@ -1,0 +1,8 @@
+#!/bin/bash
+# Request a registration token
+
+# Get deviceID
+deviceID=$(<../client/deviceID)
+
+# Get token
+curl -sS "http://localhost:3010/portal/registration-token/$deviceID" | tee ../client/token.json

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Create new key pair for the device
+rm -f ../client/clientkey*
+ssh-keygen -t rsa -b 2048 -f ../client/clientkey -N ""
+
+# Create pseudo deviceID from public key
+DeviceID="$(cat ../client/clientkey.pub | shasum -a 256 | sed 's/ .*$//')"
+echo $DeviceID > ../client/deviceID
+echo "DeviceID: $DeviceID"
