@@ -17,6 +17,7 @@ Implemented using Node.js, it has 3 distinct route tables:
 We use OpenSSL as a local CA. Everything needed should be in the `test/ca` folder. The CA configuration mimicks what we have on `secradius`, and the mso-portal-stub server can be configured to run on that server as well. See the configuration stuff in `routes/ca.js`.
 **IMPORTANT** - 
 Before using the local CA for the first time:
+
     cd test/ca
     ./initca
 
