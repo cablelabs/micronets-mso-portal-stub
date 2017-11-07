@@ -23,21 +23,14 @@ let caConfig = {};
 // Delete all client certs so we can resubmit the same CSR
 const localTest = true;
 
-console.log("__dirname: "+__dirname);
-
 if (localTest) {
     caConfig.dir = path.join(__dirname, '../', 'test', 'ca');
-    //caConfig.dir = "/Users/svenyonson/.ssh/ca";
     caConfig.secret = "secblanket";
 }
 else {
     caConfig.dir = "/etc/freeradius/certs";
     caConfig.secret = "secblanket";
 }
-
-console.log("__dirname: "+__dirname);
-console.log("caConfig.dir: "+caConfig.dir);
-
 
 // For the mockup, our "accounts" server is this node instance. (http://localhost:3010)
 function accountsURL(req) {
@@ -62,7 +55,7 @@ router.get('/csrt/:token/:subscriberID', function(req, res, next) {
             // Valid subscriberID, now check for active registration token.
             if (registration.pair(req.params.token, subscriber) == true) {
                 // Success 
-                var template = {"csr_template": {"key_type": "RSA:2048"}};
+                var template = {"csrTemplate": {"keyType": "RSA:2048"}};
                 if (debug == true) {
                     template.debug = {"context": registration.get(req.params.token)};
                 }
@@ -110,7 +103,6 @@ router.post('/cert', function(req, res) {
             await fsp.writeFile(csrFile, Buffer.from(b64string, 'base64').toString('utf8'), 'utf8');
 
             // Generate the certificate
-            //await pshell.exec("openssl ca -keyfile "+caKeyFile+" -cert "+caPemFile+" -in "+csrFile+" -key "+caConfig.secret+" -out " +crtFile+ " -config client.cnf -batch", caConfig.dir);
             await pshell.exec("openssl ca -keyfile ca.key -cert ca.pem -in tmp/csr.tmp -key secblanket -out tmp/crt.tmp -config client.cnf -batch", caConfig.dir);
             var returnObj = {};
 

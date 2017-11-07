@@ -1,7 +1,7 @@
 /* internal.js
  * Routes for stubbed private APIs
  */
- 
+
 var express = require('express');
 var router = express.Router();
 
@@ -12,11 +12,11 @@ var router = express.Router();
 var subscribers = {};
 
 // Static subscribers for testing
-function addSubscriber(id, name, SSID) {
+function addSubscriber(id, name, ssid) {
     subscriber = {};
     subscriber.id = id;
     subscriber.name = name;
-    subscriber.SSID = SSID;
+    subscriber.ssid = ssid;
     subscribers[id] = subscriber;
 }
 

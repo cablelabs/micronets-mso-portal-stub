@@ -21,7 +21,7 @@ Before using the local CA for the first time:
     cd test/ca
     ./initca
 
-This will create `index.txt` and `serial`. These files are not checked into the repo.
+This will create `index.txt` and `serial`. **These files are not checked into the repo.**
 
 ## Registration Token
 The mso-portal needs to manage the device registration process from the time the device has been selected for onboarding until the required certs have been returned to the registration server (and passed thru to the device). I renamed the "user token" to "registration token" as it is created before the user is known, and is used to manage a registration context (session information). The registration context is needed to associate the token with the selected device, the subscriber, and the certificate request.
@@ -57,8 +57,8 @@ The CSR "template" is just metadata that the client (device) needs when generati
 (optional debug: contents of the registration context)
 
 	{
-	  "csr_template": {
-	    "key_type": "RSA:2048"
+	  "csrTemplate": {
+	    "keyType": "RSA:2048"
 	  },
 	  "debug": {
 	    "context": {
@@ -68,7 +68,7 @@ The CSR "template" is just metadata that the client (device) needs when generati
 	      "subscriber": {
 	        "id": 1,
 	        "name": "Grandma",
-	        "SSID": "Grandma's WiFi"
+	        "ssid": "Grandma's WiFi"
 	      }
 	    }
 	  }
@@ -78,7 +78,8 @@ The CSR "template" is just metadata that the client (device) needs when generati
 Method: POST,  Content-Type: application/json
 
 The registration token and the CSR are supplied in the POST body as JSON. 
-NOTE: The CSR, wifiCert and caCert are base64 encoded to preserve line endings. REQUIRED!
+
+**NOTE:** The CSR, wifiCert and caCert are base64 encoded to preserve line endings. **REQUIRED!**
 
 #### url: `/ca/cert/`
     {
@@ -93,7 +94,7 @@ The response is ultimately returned to the device.
 	  "subscriber": {
 		"id": 1,
 		"name": "Grandma",
-		"SSID": "Grandma's WiFi"
+		"ssid": "Grandma's WiFi"
 	},
 	  "wifiCert": "<base64 encoded WiFi Certificate>",
 	  "caCert": "<base64 encoded CA Certificate>"
@@ -115,7 +116,7 @@ The subscriberID is provided in the URL. The required subscriber information is 
     {
       "id": 1,
       "name": "Grandma",
-      "SSID": "Grandma's WiFi"
+      "ssid": "Grandma's WiFi"
     }
 
 
