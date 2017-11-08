@@ -21,7 +21,7 @@ echo "  \"csr\": \"$CSR\"" >> ../tmp/csr.json
 echo "}" >> ../tmp/csr.json
 
 # Submit the CSR
-curl -d @../tmp/csr.json http://localhost:3010/ca/cert -v "${HEADERS[@]}" > ../tmp/certs.json
+curl -d @../tmp/csr.json http://localhost:3010/ca/cert "${HEADERS[@]}" > ../tmp/certs.json
 
 # Parse Reply
 jq -r '.subscriber' ../tmp/certs.json > ../client/subscriber.json

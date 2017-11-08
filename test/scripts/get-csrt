@@ -17,4 +17,4 @@ echo "  \"subscriberID\": \"$SUBSCRIBER\"" >> ../tmp/subscriber.json
 echo "}" >> ../tmp/subscriber.json
 
 # Submit the CSR
-curl -d @../tmp/subscriber.json http://localhost:3010/ca/csrt -v "${HEADERS[@]}" | tee ../client/csrt.json
+curl -d @../tmp/subscriber.json http://localhost:3010/ca/csrt "${HEADERS[@]}" | tee ../client/csrt.json

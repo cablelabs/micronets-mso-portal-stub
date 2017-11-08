@@ -11,4 +11,4 @@ echo "  \"deviceID\": \"$deviceID\"" >> ../tmp/token_req.json
 echo "}" >> ../tmp/token_req.json
 
 # Get token
-curl -sS -d @../tmp/token_req.json http://localhost:3010/portal/registration-token -v -H "Content-Type: application/json" | tee ../client/token.json
+curl -sS -d @../tmp/token_req.json http://localhost:3010/portal/registration-token -H "Content-Type: application/json" | tee ../client/token.json

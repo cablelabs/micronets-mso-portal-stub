@@ -40,7 +40,7 @@ The deviceID and clientID are provided in the POST body as JSON data. An authori
 
 Header Fields:
 
-    Content-Type: "application/json"
+    content-type: "application/json"
 
 POST data:
 
@@ -66,8 +66,8 @@ The CSR "template" is just metadata that the client (device) needs when generati
 
 Header Fields:
 
-    Content-Type: "application/json"
-    Authorization: "<Registration Token>""
+    content-type: "application/json"
+    authorization: "<registration token>""
 
 POST data:
 
@@ -108,8 +108,8 @@ The CSR is submitted to the CA. A wifi certificate is created and signed. The wi
 
 Header Fields:
 
-    Content-Type: "application/json"
-    Authorization: "<Registration Token>""
+    content-type: "application/json"
+    authorization: "<registration token>""
 
 POST data:
 
