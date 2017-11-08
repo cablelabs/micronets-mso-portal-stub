@@ -3,20 +3,21 @@
 This is a mockup of the mso-portal (TBD), and is used to test the registration server and to validate the REST interface between the two servers.
 
 ## Overview
-Implemented using Node.js, it has 3 distinct route tables:
+Implemented using Node.js, it has 4 distinct route tables:
 
 - index (default routes, not used at this time)
 - portal (mso-portal endpoints, primarily for registration tokens)
 - ca (pass-thru requests to the CA)
+- internal (stubbed private API for mso accounts endpoint)
 
 ## Requirements
-- node.js version 8.0 or above (tested with 8.0 on MacOS Sierra) [download](https://nodejs.org/en/download/)
+- node.js version 8.0 or above (tested with 8.9 on MacOS Sierra) [download](https://nodejs.org/en/download/)
 - jq (JSON parser, required ONLY if you need to use the test scripts) [download](https://stedolan.github.io/jq/download/)
 
 ## OpenSSL
 We use OpenSSL as a local CA. Everything needed should be in the `test/ca` folder. The CA configuration mimicks what we have on `secradius`, and the mso-portal-stub server can be configured to run on that server as well. See the configuration stuff in `routes/ca.js`.
-**IMPORTANT** - 
-Before using the local CA for the first time:
+
+**IMPORTANT** - Before using the local CA for the first time:
 
     cd test/ca
     ./initca
@@ -24,7 +25,7 @@ Before using the local CA for the first time:
 This will create `index.txt` and `serial`. **These files are not checked into the repo.**
 
 ## Registration Token
-The mso-portal needs to manage the device registration process from the time the device has been selected for onboarding until the required certs have been returned to the registration server (and passed thru to the device). I renamed the "user token" to "registration token" as it is created before the user is known, and is used to manage a registration context (session information). The registration context is needed to associate the token with the selected device, the subscriber, and the certificate request.
+The mso-portal needs to manage the device registration process from the time the device has been selected for onboarding until the required certs have been returned to the registration server (and passed thru to the device). I renamed the "user token" to "registration token" as it is created before the user is known, and is used to manage a registration context (session information). The registration context is needed to associate the token with the selected device, the client (registration server), the subscriber, and the certificate request.
 
 **NOTE:** This stub server uses a short random alpha string for the registration token. The actual mso-portal will use a JWT token. 
 
@@ -33,7 +34,7 @@ The mso-portal needs to manage the device registration process from the time the
 ### Request Registration Token:
 Method: POST
 
-The deviceID and clientID are provided in the POST body as JSON data. An authorization token is generated (and returned). The token is used internally to identify a registration context. The deviceID and clientID are stored in the registration context.
+The deviceID and clientID are provided in the POST body as JSON data. An authorization token is generated (and returned). The token is used internally to identify a registration context when it receives subsequent requests in this registration process (csrt, cert). The deviceID and clientID are stored in the registration context.
 
 #### url: `/portal/registration-token`
 
@@ -45,7 +46,7 @@ POST data:
 
     {
       "clientID": "<clientID>", // Unique identifier for the registration server. 
-      "deviceID": "<deviceID>", // Unique identifier for the device. 
+      "deviceID": "<deviceID>"  // Unique identifier for the device. 
     }
 
 #### response:
@@ -59,7 +60,7 @@ POST data:
 ### Request CSR Template
 Method: POST
 
-The CSR "template" is just metadata that the client (device) needs when generating a CSR. For now, it is just the encryption type. In addition to the registration token (used to identify the registration context) we also provide the subscriberID, as at this point the subscriber has been authenticated and we know the subscriberID. The mso-portal will need to make an internal request to the accounts/billing server to retrieve the subscriber information that we need to return to the registration server (and ultimately to the device). Initially this is just the SSID, but we also return the subscriberID and subscriber name for display/debug purposes. The subscriber information is not returned here, but added to the registration context. It will be later returned when the certificate is signed and returned.
+The CSR "template" is just metadata that the client (device) needs when generating a CSR. For now, it is just the encryption type. In addition to the registration token (used to identify the registration context) we also provide the subscriberID, as at this point the subscriber has been authenticated and we know the subscriberID. The mso-portal will need to make an internal request to the accounts/billing server to retrieve the subscriber information that we will need to return to the registration server (and ultimately to the device). Initially this is just the SSID, but we also return the subscriberID and subscriber name for display/debug purposes. The subscriber information is not returned here, but added to the registration context. It will be later returned when the certificate is signed and returned.
 
 #### url: `/ca/csrt`
 

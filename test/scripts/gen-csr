@@ -12,11 +12,12 @@ pushd ../ca > /dev/null
 deviceID=$(<../client/deviceID)
 
 # Extract encryption type (typically rsa:2048)
-type=`jq -r '.csr_template.key_type' ../client/csrt.json`
+type=`jq -r '.csrTemplate.keyType' ../client/csrt.json`
 
 # Generate CSR
 openssl req -newkey "$type" -key ../client/clientkey -out ../client/client.csr -config request_csr.cnf
 
+# Display CSR
 cat ../client/client.csr
 
 popd > /dev/null

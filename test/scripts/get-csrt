@@ -9,4 +9,12 @@
 TOKEN=`jq -r '.registration.token' ../client/token.json`
 SUBSCRIBER=1		# Can be 1,2, or 3. See ../../routes/internal.js. 1 == Grandma
 
-curl -sS "http://localhost:3010/ca/csrt/$TOKEN/$SUBSCRIBER" | tee ../client/csrt.json
+declare -a HEADERS=('-H' "content-type: application/json" '-H' "authorization: $TOKEN")
+
+# Create JSON wrapper
+echo "{" > ../tmp/subscriber.json
+echo "  \"subscriberID\": \"$SUBSCRIBER\"" >> ../tmp/subscriber.json
+echo "}" >> ../tmp/subscriber.json
+
+# Submit the CSR
+curl -d @../tmp/subscriber.json http://localhost:3010/ca/csrt -v "${HEADERS[@]}" | tee ../client/csrt.json
