@@ -1,6 +1,6 @@
 # mso-portal-stub
 
-This is a stand-in for the TBD mso-portal, and is used to test the registration server and to validate the REST interface between the two servers.
+This is a mockup of the mso-portal (TBD), and is used to test the registration server and to validate the REST interface between the two servers.
 
 ## Overview
 Implemented using Node.js, it has 3 distinct route tables:
@@ -26,15 +26,27 @@ This will create `index.txt` and `serial`. **These files are not checked into th
 ## Registration Token
 The mso-portal needs to manage the device registration process from the time the device has been selected for onboarding until the required certs have been returned to the registration server (and passed thru to the device). I renamed the "user token" to "registration token" as it is created before the user is known, and is used to manage a registration context (session information). The registration context is needed to associate the token with the selected device, the subscriber, and the certificate request.
 
+**NOTE:** This stub server uses a short random alpha string for the registration token. The actual mso-portal will use a JWT token. 
+
 ## Public REST Interface
 
-### Get Registration Token:
-Method: GET
+### Request Registration Token:
+Method: POST
 
-The deviceID is provided in the URL. A random token is generated (and returned). The token is used internally to identify a registration context. The deviceID is stored in the registration context.
+The deviceID and clientID are provided in the POST body as JSON data. An authorization token is generated (and returned). The token is used internally to identify a registration context. The deviceID and clientID are stored in the registration context.
 
-#### url: `/portal/registration-token/<deviceID>`
-- deviceID:  Unique identifier for the device. TBD how the deviceID is initially created, for our testing we use a sha256 of the device's public key.
+#### url: `/portal/registration-token`
+
+Header Fields:
+
+    Content-Type: "application/json"
+
+POST data:
+
+    {
+      "clientID": "<clientID>", // Unique identifier for the registration server. 
+      "deviceID": "<deviceID>", // Unique identifier for the device. 
+    }
 
 #### response:
 
@@ -44,14 +56,25 @@ The deviceID is provided in the URL. A random token is generated (and returned).
       }
     }
 
-### Get CSR Template
-Method: GET
+### Request CSR Template
+Method: POST
 
 The CSR "template" is just metadata that the client (device) needs when generating a CSR. For now, it is just the encryption type. In addition to the registration token (used to identify the registration context) we also provide the subscriberID, as at this point the subscriber has been authenticated and we know the subscriberID. The mso-portal will need to make an internal request to the accounts/billing server to retrieve the subscriber information that we need to return to the registration server (and ultimately to the device). Initially this is just the SSID, but we also return the subscriberID and subscriber name for display/debug purposes. The subscriber information is not returned here, but added to the registration context. It will be later returned when the certificate is signed and returned.
 
-#### url: `/ca/csrt/<token>/<subscriberID`
-- token:  Registration token
-- subscriberID: Identifies a subscriber account. The Registration Server obtains this when the subscriber authenticates using the clinic browser (eg. scanning QR Code)
+#### url: `/ca/csrt`
+
+Header Fields:
+
+    Content-Type: "application/json"
+    Authorization: "<Registration Token>""
+
+POST data:
+
+    {
+      "subscriberID": "<subscriberID>"	
+    }
+
+The `subscriberID` identifies a subscriber account. The Registration Server obtains this when the subscriber authenticates using the clinic browser (eg. scanning QR Code)
 
 #### response: 
 (optional debug: contents of the registration context)
@@ -63,6 +86,7 @@ The CSR "template" is just metadata that the client (device) needs when generati
 	  "debug": {
 	    "context": {
 	      "token": "EXPZF",
+	      "clientID": "www.happyclinic.com",
 	      "deviceID": "730c8aa0a2e535c8caa3e1398c6fdbb476223088551d45315fc4c9941cf55f9e",
 	      "timestamp": 1510077436128,
 	      "subscriber": {
@@ -75,17 +99,24 @@ The CSR "template" is just metadata that the client (device) needs when generati
 	}
 
 ### Submit CSR:
-Method: POST,  Content-Type: application/json
+Method: POST
 
-The registration token and the CSR are supplied in the POST body as JSON. 
-
-**NOTE:** The CSR, wifiCert and caCert are base64 encoded to preserve line endings. **REQUIRED!**
+The CSR is submitted to the CA. A wifi certificate is created and signed. The wifi certificate, CA certificate are base64 encoded and returned as JSON along with subscriber metadata.
 
 #### url: `/ca/cert/`
+
+Header Fields:
+
+    Content-Type: "application/json"
+    Authorization: "<Registration Token>""
+
+POST data:
+
     {
-      "token": "<token>",
       "csr": "<base64 encoded CSR>"
     }
+
+**NOTE:** The CSR, wifiCert and caCert are base64 encoded to preserve line endings. **REQUIRED!**
 
 #### response:
 The response is ultimately returned to the device.
