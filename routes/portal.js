@@ -20,11 +20,8 @@ router.get('/registration-token/:deviceID', function(req, res, next) {
 // New, use post, deviceID and clientID in body
 /* POST registration token. */
 router.post('/registration-token', function(req, res, next) {
-	const deviceID = req.body.deviceID;
-	const clientID = req.body.clientID;
-
     let token = {}
-    token.registration = {"token": registration.begin(deviceID, clientID)}
+    token.registration = {"token": registration.begin(req.body)}
     res.send(JSON.stringify(token, null, 2)+"\n");
 });
 

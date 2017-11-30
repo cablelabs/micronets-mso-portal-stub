@@ -46,7 +46,11 @@ POST data:
 
     {
       "clientID": "<clientID>", // Unique identifier for the registration server. 
-      "deviceID": "<deviceID>"  // Unique identifier for the device. 
+      "deviceID": "<deviceID>", // Unique identifier for the device. 
+      "vendor": "<vendor>",		// Device manufacturer/vendor
+      "type": "<type>",			// Device type - friendly name, eg. "Heartrate Monitor"
+      "model": "<model>",		// Device model - eg. "Accu-Pulse"
+      "serial": "<serial>"		// Device serial (manufacturer's serial, NOT deviceID)
     }
 
 #### response:
@@ -67,7 +71,7 @@ The CSR "template" is just metadata that the client (device) needs when generati
 Header Fields:
 
     content-type: "application/json"
-    authorization: "<registration token>""
+    authorization: "<registration token>"
 
 POST data:
 
@@ -109,7 +113,7 @@ The CSR is submitted to the CA. A wifi certificate is created and signed. The wi
 Header Fields:
 
     content-type: "application/json"
-    authorization: "<registration token>""
+    authorization: "<registration token>"
 
 POST data:
 
@@ -127,7 +131,7 @@ The response is ultimately returned to the device.
 		"id": 1,
 		"name": "Grandma",
 		"ssid": "Grandma's WiFi"
-	},
+	  },
 	  "wifiCert": "<base64 encoded WiFi Certificate>",
 	  "caCert": "<base64 encoded CA Certificate>"
     }

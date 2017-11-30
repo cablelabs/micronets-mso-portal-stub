@@ -2,12 +2,20 @@
 # Request a registration token
 
 deviceID=$(<../client/deviceID)
-clientID="www.happyclinic.com";
+clientID="www.happyclinic.com"
+vendor="Panasonic"
+dtype="Heartrate Monitor"
+model="Accu-pulse"
+serial="AP-0001234"
 
 # Create JSON wrapper
 echo "{" > ../tmp/token_req.json
 echo "  \"clientID\": \"$clientID\"," >> ../tmp/token_req.json
-echo "  \"deviceID\": \"$deviceID\"" >> ../tmp/token_req.json
+echo "  \"deviceID\": \"$deviceID\"," >> ../tmp/token_req.json
+echo "  \"vendor\": \"$vendor\"," >> ../tmp/token_req.json
+echo "  \"type\": \"$dtype\"," >> ../tmp/token_req.json
+echo "  \"model\": \"$model\"," >> ../tmp/token_req.json
+echo "  \"serial\": \"$serial\"" >> ../tmp/token_req.json
 echo "}" >> ../tmp/token_req.json
 
 # Get token
