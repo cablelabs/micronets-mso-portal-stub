@@ -50,7 +50,8 @@ POST data:
       "vendor": "<vendor>",		// Device manufacturer/vendor
       "type": "<type>",			// Device type - friendly name, eg. "Heartrate Monitor"
       "model": "<model>",		// Device model - eg. "Accu-Pulse"
-      "serial": "<serial>"		// Device serial (manufacturer's serial, NOT deviceID)
+      "serial": "<serial>,"		// Device serial (manufacturer's serial, NOT deviceID)
+      "macAddress": "<MAC>"		// Device MAC address
     }
 
 #### response:
