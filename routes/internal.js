@@ -16,11 +16,12 @@ function addSubscriber(id, name, ssid) {
     subscribers[id] = subscriber;
 }
 
-addSubscriber(1, "Grandma", "Grandma's WiFi");
-addSubscriber(2, "Uncle Bob", "Uncle Bob's WiFi");
-addSubscriber(3, "Wendell", "Wendels's WiFi");
+addSubscriber("7B2A-BE88-08817Z", "Grandma", "Grandma's LINKSYS 1900");
+addSubscriber("1ZT5-OE63-57383B", "Bob T. Builder", "Bob's TP-LINK AC1200");
+addSubscriber("9XE3-JI34-00132A", "Alice I. Wonderland", "Alice's Netgear AC1750");
 
 // This is just to get subscriber info that will be required by the client. For now, just SSID
+// TODO: This should be protected, only allow requests from internal endpoints.
 router.get('/subscriber/:subscriberID', function(req, res, next) {
     // Check for valid user token
     if (subscribers[req.params.subscriberID] == undefined) {

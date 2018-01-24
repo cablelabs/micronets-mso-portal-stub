@@ -9,7 +9,7 @@
 pushd ../ca > /dev/null
 
 # Get deviceID
-deviceID=$(<../client/deviceID)
+# deviceID=$(<../client/deviceID)
 
 # Extract encryption type (typically rsa:2048)
 type=`jq -r '.csrTemplate.keyType' ../client/csrt.json`

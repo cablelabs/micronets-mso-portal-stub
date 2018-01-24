@@ -11,7 +11,7 @@
 const express = require('express');
 const router = express.Router();
 const registration = require('../lib/registration.js');
-const http_request = require('../lib/http_request.js').http_request;
+const http_get = require('../lib/http_request.js').http_get;
 const pshell = require('../lib/pshell.js');  // promisified shell commands (exec, spawn, execFile, etc)
 const fsp = require('fs-extra');
 const path = require('path');
@@ -41,8 +41,10 @@ function accountsURL(req) {
 
 // Return a CSR Template. The device needs to know the key type to put into the CSR, maybe other things in the future.
 // We need to be sure there is an active registration context and a valid subscriberID to associate with that context.
-//router.get('/csrt/:token/:subscriberID', function(req, res, next) {
 router.post('/csrt', function(req, res, next) {
+
+    //console.log('/csrt - headers: '+ JSON.stringify(req.headers));
+    //console.log('/csrt - body: '+ JSON.stringify(req.body));
 
     const token = req.headers.authorization;
     let context = registration.get(token);
@@ -58,7 +60,7 @@ router.post('/csrt', function(req, res, next) {
         const subscriberID = req.body.subscriberID;
 
         // First check for valid subscriberID
-        http_request(accountsURL(req)+subscriberID, function(error, subscriber){
+        http_get(accountsURL(req)+subscriberID, function(error, subscriber){
             //console.log("accounts - error: "+error);
             if (error != null || subscriber.error != null) {
                 let err = {};
@@ -70,7 +72,8 @@ router.post('/csrt', function(req, res, next) {
             }
             else {
                 // Success 
-                registration.pair(req.params.token, subscriber);
+                console.log('/csrt - subscriber: '+JSON.stringify(subscriber));
+                registration.pair(token, subscriber);
                 var template = {"csrTemplate": {"keyType": "RSA:2048"}};
                 if (debug == true) {
                     template.debug = {"context": registration.get(token)};
@@ -86,6 +89,9 @@ router.post('/csrt', function(req, res, next) {
 // POST body is expected to be JSON, containing the CSR.
 router.post('/cert', function(req, res) {
 
+    //console.log('/cert - headers: '+ JSON.stringify(req.headers));
+    //console.log('/cert - body: '+ JSON.stringify(req.body));
+
     const token = req.headers.authorization;
     const context = registration.get(token);
     if (context == undefined) {
@@ -94,14 +100,19 @@ router.post('/cert', function(req, res) {
         err.status = 403;
 
         res.status(err.status);
-        res.send(JSON.stringify(err, null, 2)+"\n");                
+        res.send(JSON.stringify(err, null, 2)+"\n");
+
+        console.log(err.error);                
     }
+
+    console.log('/cert - context: '+JSON.stringify(context));
 
     let returnObj = {};
 
     (async () => {
         try {
             // Ensure we have a ./tmp directory
+            console.log('await - mkdir tmp');
             await fsp.mkdirp(caConfig.dir+"/tmp");
 
             // We need the CSR saved to a file.
@@ -129,8 +140,7 @@ router.post('/cert', function(req, res) {
             res.send(JSON.stringify(returnObj)+"\n");
 
         } catch (e) {
-            console.log('/cert error: ', e);
-            let err = {};
+           let err = {};
             err.error = e;
             err.status = 400;
 
