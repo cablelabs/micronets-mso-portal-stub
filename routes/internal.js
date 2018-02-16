@@ -30,10 +30,11 @@ router.get('/subscriber/:subscriberID', function(req, res, next) {
         var error = {};
         error.error = "Subscriber not found";
         error.status = 400;
-        res.send(JSON.stringify(error, null, 2)+"\n");
+        res.send(JSON.stringify(error, null, 2));
     }
     else {
-        res.send(JSON.stringify(subscribers[req.params.subscriberID], null, 2)+"\n");
+        //res.send(JSON.stringify(subscribers[req.params.subscriberID], null, 2));
+        res.json(subscribers[req.params.subscriberID]);
     }
 });
 

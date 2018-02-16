@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./mso-portal.js"
+    "start": "node ./mso-portal.js",
+    "docker-build": "docker build -t code.cablelabs.com:4567/micronets/mso-portal-stub .",
+    "docker-publish": "docker login code.cablelabs.com:4567; docker push code.cablelabs.com:4567/micronets/mso-portal-stub"
   },
   "dependencies": {
     "body-parser": "~1.18.2",

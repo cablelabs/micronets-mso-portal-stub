@@ -1,6 +1,6 @@
 node_modules
 boneyard
-test
+#test (need ca files)
 tmp
 .git
 .gitignore
