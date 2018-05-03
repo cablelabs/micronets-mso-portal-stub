@@ -8,6 +8,14 @@ dtype="Heartrate Monitor"
 model="Accu-pulse"
 serial="AP-0001234"
 macAddress="08:00:69:02:01:FC"
+class="Medical"
+
+URL="http://localhost:3010"
+if [ $# -ge 1 ]
+  then
+    URL=$1
+fi
+
 
 # Create JSON wrapper
 echo "{" > ../tmp/token_req.json
@@ -17,8 +25,9 @@ echo "  \"vendor\": \"$vendor\"," >> ../tmp/token_req.json
 echo "  \"type\": \"$dtype\"," >> ../tmp/token_req.json
 echo "  \"model\": \"$model\"," >> ../tmp/token_req.json
 echo "  \"serial\": \"$serial\"," >> ../tmp/token_req.json
-echo "  \"macAddress\": \"$macAddress\"" >> ../tmp/token_req.json
+echo "  \"macAddress\": \"$macAddress\"," >> ../tmp/token_req.json
+echo "  \"class\": \"$class\"" >> ../tmp/token_req.json
 echo "}" >> ../tmp/token_req.json
 
 # Get token
-curl -sS -d @../tmp/token_req.json http://localhost:3010/portal/registration-token -H "Content-Type: application/json" | tee ../client/token.json
+curl --verbose -sS -d @../tmp/token_req.json "$URL/portal/registration-token" -H "Content-Type: application/json" | tee ../client/token.json

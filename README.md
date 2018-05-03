@@ -52,6 +52,7 @@ POST data:
       "model": "<model>",		// Device model - eg. "Accu-Pulse"
       "serial": "<serial>,"		// Device serial (manufacturer's serial, NOT deviceID)
       "macAddress": "<MAC>"		// Device MAC address
+      "class": "<class>"		// Device Class (eg. Medical)
     }
 
 #### response:
