@@ -2,7 +2,8 @@
 # Request a registration token
 
 deviceID=$(<../client/deviceID)
-clientID="www.happyclinic.com"
+#clientID="www.happyclinic.com"
+clientID="clinic-858"
 vendor="Panasonic"
 dtype="Heartrate Monitor"
 model="Accu-pulse"
@@ -30,4 +31,4 @@ echo "  \"class\": \"$class\"" >> ../tmp/token_req.json
 echo "}" >> ../tmp/token_req.json
 
 # Get token
-curl --verbose -sS -d @../tmp/token_req.json "$URL/portal/registration-token" -H "Content-Type: application/json" | tee ../client/token.json
+curl --verbose -sS -d @../tmp/token_req.json "$URL/portal/registration/token" -H "Content-Type: application/json" | tee ../client/token.json
