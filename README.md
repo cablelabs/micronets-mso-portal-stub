@@ -36,7 +36,7 @@ Method: POST
 
 The deviceID and clientID are provided in the POST body as JSON data. An authorization token is generated (and returned). The token is used internally to identify a registration context when it receives subsequent requests in this registration process (csrt, cert). The deviceID and clientID are stored in the registration context.
 
-#### url: `/portal/registration-token`
+#### url: `/portal/registration/token`
 
 Header Fields:
 
@@ -51,16 +51,16 @@ POST data:
       "type": "<type>",			// Device type - friendly name, eg. "Heartrate Monitor"
       "model": "<model>",		// Device model - eg. "Accu-Pulse"
       "serial": "<serial>,"		// Device serial (manufacturer's serial, NOT deviceID)
-      "macAddress": "<MAC>"		// Device MAC address
+      "macAddress": "<MAC>,"	// Device MAC address
+      "modelUID64": "<uid-64>"  // UID-64 model indentifier for looking up MUD
+      "mudURL": "<url>,"		// Location of device MUD file
       "class": "<class>"		// Device Class (eg. Medical)
     }
 
 #### response:
 
     {
-      "registration": {
-        "token": "SYABZ"
-      }
+    	"acessToken": "SYABZ"
     }
 
 ### Request CSR Template

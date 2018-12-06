@@ -14,7 +14,9 @@ router.post('/registration/token', function(req, res, next) {
     let token = {}
     token.accessToken = registration.begin(req.body);
     res.setHeader('content-type', 'application/json');
-    res.send(JSON.stringify(token, null, 2)+"\n");
+    var msg = JSON.stringify(token, null, 2)+"\n";
+    res.send(msg);
+    console.log(msg);
 });
 
 // Debugging only
