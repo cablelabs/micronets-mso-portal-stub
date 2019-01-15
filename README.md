@@ -1,6 +1,6 @@
-# mso-portal-stub
+# micronets-mso-portal-stub
 
-This is a mockup of the mso-portal (TBD), and is used to test the registration server and to validate the REST interface between the two servers.
+This is a mockup of the mso-portal, and is used to test the registration server and to validate the REST interface between the two servers. It provides a way to test the front end functionality without an actual back end.
 
 ## Overview
 Implemented using Node.js, it has 4 distinct route tables:

@@ -1,11 +1,13 @@
 {
-  "name": "mso-portal-stub",
+  "name": "micronets-mso-portal-stub",
   "version": "1.0.0",
   "private": true,
+  "repository": "https://github.com/cablelabs/micronets-mso-portal-stub",
+  "description": "Micronets MSO Portal (stub)",
   "scripts": {
-    "start": "node ./mso-portal.js",
-    "docker-build": "docker build -t code.cablelabs.com:4567/micronets/mso-portal-stub .",
-    "docker-publish": "docker login code.cablelabs.com:4567; docker push code.cablelabs.com:4567/micronets/mso-portal-stub"
+    "start": "node ./mso-portal",
+    "docker-build": "docker build -t community.cablelabs.com:4567/micronets-docker/micronets-mso-portal-stub .",
+    "docker-publish": "docker login community.cablelabs.com:4567; docker push community.cablelabs.com:4567/micronets-docker/micronets-mso-portal-stub"
   },
   "dependencies": {
     "body-parser": "~1.18.2",
