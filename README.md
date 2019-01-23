@@ -186,7 +186,7 @@ The subscriberID is provided in the URL. The required subscriber information is 
 Edit `package.json` to be sure the docker remote registry URL is correct for the `docker_publish` script
 
 ```  "scripts": {
-    "start": "node ./mso-portal-stub",
+    "start": "node ./mso-portal",
     "docker-build": "docker build -t community.cablelabs.com:4567/micronets-docker/micronets-mso-portal-stub .",
     "docker-publish": "docker login community.cablelabs.com:4567; docker push community.cablelabs.com:4567/micronets-docker/micronets-mso-portal-stub"
   },
