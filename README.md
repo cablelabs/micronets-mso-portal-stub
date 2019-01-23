@@ -29,7 +29,7 @@ The mso-portal needs to manage the device registration process from the time the
 
 **NOTE:** This stub server uses a short random alpha string for the registration token. The actual mso-portal will use a JWT token. 
 
-## Public REST Interface
+## API
 
 ### Request Registration Token:
 Method: POST
@@ -158,7 +158,7 @@ The subscriberID is provided in the URL. The required subscriber information is 
     }
 
 
-## Layout
+## Repository Layout
 - *mso-portal.js* - application wrapper (http server)
 - *app.js* - application main
 - *lib/* - local modules
@@ -182,3 +182,33 @@ The subscriberID is provided in the URL. The required subscriber information is 
 		- *portal-test* - runs all of the above in sequence (except `clean`)
 - *views/* - express templates (not used)
 
+## Build
+Edit `package.json` to be sure the docker remote registry URL is correct for the `docker_publish` script
+
+```  "scripts": {
+    "start": "node ./mso-portal-stub",
+    "docker-build": "docker build -t community.cablelabs.com:4567/micronets-docker/micronets-mso-portal-stub .",
+    "docker-publish": "docker login community.cablelabs.com:4567; docker push community.cablelabs.com:4567/micronets-docker/micronets-mso-portal-stub"
+  },
+```
+Install packages, build and publish:
+```
+  npm install
+  npm run docker_build
+  npm run docker_publish
+```
+## Deploy
+The Micronets MSO Portal (stub) is deployed as a docker container.
+Docker deployment instructions can be found [here](https://github.com/cablelabs/micronets/wiki/Docker-Deployment-Guide)
+
+NOTE: MSO Portal (stub) is intended as a test backend and cannot be run simultaneously with the actual MSO Portal without special configuration.
+
+The environment variables to be passed to the authorization server are:
+```
+  -e PORT=3010              # port to listen on
+```
+
+## Example run command
+```
+docker run -d --name=micronets-mso-portal-stub  -p 3010:3010 -e PORT=3010 community.cablelabs.com:4567/micronets-docker/micronets-mso-portal-stub:latest
+```
