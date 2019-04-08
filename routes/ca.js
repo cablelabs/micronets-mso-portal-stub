@@ -36,7 +36,7 @@ else {
 
 // For the mockup, our "accounts" server is this node instance. (http://localhost:3010)
 function accountsURL(req) {
-    return "http://"+req.headers.host+"/internal/subscriber/";
+    return "http://"+req.headers.host+"/portal/v1/subscriber/";
 }
 
 // Return a CSR Template. The device needs to know the key type to put into the CSR, maybe other things in the future.
@@ -145,6 +145,7 @@ router.post('/cert', function(req, res) {
             err.status = 400;
 
             res.status(err.status);
+            console.log("/cert failed: "+JSON.stringify(err));
             res.send(JSON.stringify(err, null, 2)+"\n");
         } finally {
             // Remove the registration context

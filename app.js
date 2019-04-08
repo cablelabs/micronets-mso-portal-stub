@@ -21,9 +21,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 /* routes */
 app.use('/', require('./routes/index'));
-app.use('/ca', require('./routes/ca'));
-app.use('/portal', require('./routes/portal'));
-app.use('/internal', require('./routes/internal'));
+app.use('/portal/v1/ca', require('./routes/ca'));
+app.use('/portal/v1', require('./routes/portal'));
+
+// Moved to /routes/portal due to Ashwini's refactor
+//app.use('/internal', require('./routes/internal'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
