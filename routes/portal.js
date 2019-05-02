@@ -58,5 +58,4 @@ router.get('/subscriber/:subscriberID', function(req, res, next) {
     }
 });
 
-
 module.exports = router;
