@@ -27,10 +27,23 @@ function checkAuth (req, res, next) {
 	}
 }
 
+// Mobile config
+router.get('/config', function(req, res, next) {
+	var config = {
+		"deviceClasses" : ["Medical", "Security", "Personal", "Generic", "Shared"]
+	}
+	res.send(JSON.stringify(config));
+});
+
 // POST dpp/onboard 
 router.post('/onboard', checkAuth, function(req, res, next) {
 
-    // Lookup subscriber MM endpoint
+	console.log('\n POST ONBOARD REQUEST BODY : '+ JSON.stringify(req.body));
+ 	console.log('\n POST ONBOARD REQUEST HEADERS : '+ JSON.stringify(req.headers))  ;  
+
+
+ 	// Lookup subscriber MM endpoint
+
     // Forward to MM (STUB: Send to our local endpoint)
 
     /*
