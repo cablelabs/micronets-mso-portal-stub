@@ -4,24 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var gateway = require('./lib/gateway');
 
-/*
-var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-*/
-
-//const session = require('express-session');
 var nunjucks = require('nunjucks');
 
 var app = express();
@@ -38,11 +22,6 @@ app.use(function(req, res, next) {
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); // support form-encoded bodies (for the token endpoint)
-
-// Template engine
-//app.engine('html', cons.underscore);
-//app.set('view engine', 'html');
-//app.set('views', path.join(__dirname, 'views'));
 
 nunjucks.configure('views', {
   autoescape: true,
@@ -62,9 +41,6 @@ app.use('/portal/v1/dpp', require('./routes/dpp'));
 app.use('/portal/v1', require('./routes/portal'));
 app.use('/dpp', require('./routes/dpp'));
 app.use('/mm-stub/v1', require('./routes/mm-stub'));
-
-// Moved to /routes/portal due to Ashwini's refactor
-//app.use('/internal', require('./routes/internal'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -87,5 +63,13 @@ app.use(function(err, req, res, next) {
   console.log(JSON.stringify(err));
   console.log(err.stack);
 });
+
+if (process.env.gateway) {
+    (async() => {
+        await gateway.createMicronet();
+        //await gateway.createDevice("00:c0:ca:97:d0:8e");
+        //await gateway.onboard("DPP:C:81/1;M:00:c0:ca:97:d0:8e;I:DAWG;K:MDkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDIgACxWymZEfYXbrRKItdfNrdv39oXwueoWwfP5znPik9hIE=;;");
+    })()
+}
 
 module.exports = app;

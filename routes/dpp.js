@@ -11,6 +11,8 @@ const session = require('express-session');
 const URL = require('url');
 const sessionCookieName = '3010.connect.sid'; 
 const http = require('http');
+const gateway = require('../lib/gateway')
+
 
 // Note: we need httpOnly: false so that xhr login can store cookie.
 //router.use(session({ secret: 'micronets-dpp', name: sessionCookieName, httpOnly: false }));
@@ -35,77 +37,50 @@ router.get('/config', function(req, res, next) {
 	res.send(JSON.stringify(config));
 });
 
+// Session
+router.get('/session', function(req, res, next) {
+	res.send("Ok Foo");
+});
+
 // POST dpp/onboard 
 router.post('/onboard', checkAuth, function(req, res, next) {
 
-	console.log('\n POST ONBOARD REQUEST BODY : '+ JSON.stringify(req.body));
- 	console.log('\n POST ONBOARD REQUEST HEADERS : '+ JSON.stringify(req.headers))  ;  
+	if (process.env.gateway) {
+		(async() => {
+			console.log(`onboard: ${req.body.bootstrap.mac}  -  ${req.body.bootstrap.uri}`)
 
+	        await gateway.createDevice(req.body.bootstrap.mac);
+	        await gateway.onboard(req.body.bootstrap.uri);
 
- 	// Lookup subscriber MM endpoint
+	        console.log(JSON.stringify(req.body));
+	        res.end();
+	    })();
+	}
+	else {
+		console.log('\n POST ONBOARD REQUEST BODY : '+ JSON.stringify(req.body));
+	 	console.log('\n POST ONBOARD REQUEST HEADERS : '+ JSON.stringify(req.headers))  ;  
+	    setTimeout(function(){
 
-    // Forward to MM (STUB: Send to our local endpoint)
-
-    /*
-	var post_options = {
-		host: "localhost",
-		port: '3010',
-		path: '/mm-stub/v1/onboard',
-		method: 'POST',
-		//headers: {
-		//    'Content-Type': 'application/json',
-		//    'Content-Length': Buffer.byteLength(post_data)
-		//}
-		headers: req.headers
-	};
-
-	// Set up the request
-	var post_req = http.request(post_options, function(res2) {
-		res2.setEncoding('utf8');
-
-        var data = '';
-
-	    // A chunk of data has been recieved.
-	    res2.on('data', (chunk) => {
-	        data += chunk;
-	    });
-	 
-	    // The whole response has been received.
-	    res2.on('end', () => {
-	    	// return to sender
-	    	console.log("response from MM: "+ data);
-	    	res.send(data);
-	    });
-
-	});
-
-	// post the data
-	post_req.write(JSON.stringify(req.body));
-	post_req.end();
-
-
-    */
-    setTimeout(function(){
-
-    	var response = {
-			"message" : {
-				"messageId" : 2,
-				"messageType" : "EVENT:DPP:DPPOnboardingCompleteEvent",
-				"requiresResponse" : false,
-				"messageBody" : {
-					"DPPOnboardingCompleteEvent" : {
-						"deviceId" : "MyDevice01",
-						"reason" : "This is only a test",
-						"micronetId" : "mockmicronet007",
-						"macAddress" : req.body.mac
-					}
-				},
-				"dataFormat" : "application/json"
+	    	var response = {
+				"message" : {
+					"messageId" : 2,
+					"messageType" : "EVENT:DPP:DPPOnboardingCompleteEvent",
+					"requiresResponse" : false,
+					"messageBody" : {
+						"DPPOnboardingCompleteEvent" : {
+							"deviceId" : "MyDevice01",
+							"reason" : "This is only a test",
+							"micronetId" : "mockmicronet007",
+							"macAddress" : req.body.mac
+						}
+					},
+					"dataFormat" : "application/json"
+				}
 			}
-		}
-	    console.log("/onboard: \n" + JSON.stringify(response, undefined, 2));
-	    res.send(JSON.stringify(response));
-    }, 5000);
+		    console.log("/onboard: \n" + JSON.stringify(response, undefined, 2));
+		    res.send(JSON.stringify(response));
+	    }, 5000);	
+	}
 });
 
 // POST submit login form
@@ -149,6 +124,17 @@ router.post('/login', function(req, res, next) {
     // ***************************************************** //
 });
 
+// These two endpoints are used to kick the STA offline, so we can issue a CHIRP
+router.post('/updatePSK', function(req, res, next) {
+	device = gateway.updateDevicePSK();
+	res.status(201).send(JSON.stringify(device,null,2));
+});
+
+router.post('/delete', function(req, res, next) {
+	gateway.deleteDevice();
+	res.status(201).end();
+});
+
 router.post('/logout', function(req, res, next) {
 	if (!req.session || !req.session.authenticated) {
 		res.status(200).end();  
@@ -172,4 +158,5 @@ router.post('/checksession', checkAuth, function(req, res) {
 });
 
 module.exports = router;
+
 
